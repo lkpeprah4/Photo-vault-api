@@ -14,39 +14,6 @@ bcrypt = Bcrypt()
 auth_bp = Blueprint("auth_bp", __name__, url_prefix="/auth")
 
 
-@auth_bp.route("/register", methods=["POST"])
-def register():
-    data = request.get_json()
-    username = data.get("username")
-    email = data.get("email")
-    password = data.get("password")
-
-    if not username:
-        return jsonify({"msg": "USERNAME FIELD IS REQUIRED"}), 400
-    if not password:
-        return jsonify({"msg": "PASSWORD FIELD IS REQUIRED"}), 400
-    if not email:
-        return jsonify({"msg": "EMAIL FIELD IS REQUIRED"}), 400
-
-    if User.query.filter_by(email=email).first():
-        return jsonify({"msg": "EMAIL ALREADY EXISTS"}), 400
-    if User.query.filter_by(username=username).first():
-        return jsonify({"msg": "USERNAME ALREADY EXISTS"}), 400
-
-    hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
-    new_user = User(username=username, password=hashed_password, email=email)
-
-    db.session.add(new_user)
-    db.session.commit()
-
-    access_token = create_access_token(identity=str(new_user.id))
-
-    return jsonify({
-        "msg": "User registered successfully",
-        "access_token": access_token
-    }), 201
-
-
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
