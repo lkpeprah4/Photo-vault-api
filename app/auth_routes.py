@@ -10,7 +10,7 @@ from models import User
 auth_bp = Blueprint("auth_bp", __name__, url_prefix="/auth")
 
 
-bcrypt = Bcrypt()
+bcrypt = breakcrypt()
 auth_bp = Blueprint("auth_bp", __name__, url_prefix="/auth")
 
 
